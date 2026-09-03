@@ -6,12 +6,12 @@ import plotly.graph_objects as go
 
 # --- CONFIGURACIÓN DE LA PÁGINA ---
 st.set_page_config(
-    page_title="Simulador de Biodigestor Educativo v3", 
+    page_title="Biodigestor Virtual", 
     page_icon="🌱",
     layout="wide"
 )
 
-st.title("🌱 Simulador Educativo de Biodigestión Anaerobia - SimBIO v3")
+st.title("🌱 Biodigestor Virtual")
 
 # --- CARGA DE DATOS ROBUSTA ---
 @st.cache_data
@@ -51,7 +51,7 @@ def cargar_datos():
 # Cargar datasets
 df_sustratos, df_params, df_agitacion, df_purif = cargar_datos()
 
-# --- FUNCIÓN ANIMACIÓN SVG ESTILO PhET CON ESCALA DE pH Y CÚPULA VERDE ---
+# --- FUNCIÓN ANIMACIÓN SVG ESTILO PhET CON MEJORAS DE DISEÑO ---
 def mostrar_animacion_biodigestor(volumen_m3, temp_c, modo_agitacion, ph_entrada, ph_reactor, masa_kg_dia, m3_biogas_dia):
     # 1. Configuración de agitación
     if modo_agitacion == "continua":
@@ -67,146 +67,141 @@ def mostrar_animacion_biodigestor(volumen_m3, temp_c, modo_agitacion, ph_entrada
     # 2. Frecuencia de burbujeo según tasa de biogás
     dur_burbuja = "1.2s" if m3_biogas_dia > 200 else ("2.5s" if m3_biogas_dia > 50 else "4.5s")
     
-    # 3. Nivel de carga en la tolva de entrada (30 a 80 px)
-    alto_cuba_biomasa = int(min(80, max(20, (masa_kg_dia / 5000) * 80)))
+    # 3. Nivel de carga en la tolva de entrada (20 a 70 px)
+    alto_cuba_biomasa = int(min(70, max(15, (masa_kg_dia / 5000) * 70)))
     y_inicio_biomasa = 230 - alto_cuba_biomasa
 
-    # 4. Cálculo de posición Y del indicador en la escala de pH (0 a 14)
-    # Rango de Y en la escala SVG: pH 14 -> Y=70 | pH 0 -> Y=250
-    y_sonda_escala = int(250 - (ph_reactor / 14.0) * 180)
+    # 4. Posición Y en escala de pH (0 a 14 -> Y: 250 a 80)
+    y_sonda_escala = int(250 - (ph_reactor / 14.0) * 170)
 
     html_code = f"""
-    <div style="display: flex; justify-content: center; align-items: center; background-color: #ffffff; padding: 10px; border-radius: 12px; border: 1px solid #e0e0e0;">
-        <svg width="460" height="320" viewBox="0 0 460 320">
+    <div style="display: flex; justify-content: center; align-items: center; background-color: #ffffff; padding: 10px; border-radius: 12px; border: 1px solid #e2e8f0;">
+        <svg width="480" height="310" viewBox="0 0 480 310">
             <defs>
                 <!-- Gradiente Cúpula VERDE de Gas -->
                 <linearGradient id="gasDomeGreenGrad" x1="0%" y1="0%" x2="0%" y2="100%">
                     <stop offset="0%" stop-color="#2ecc71" stop-opacity="0.85"/>
-                    <stop offset="100%" stop-color="#a8e6cf" stop-opacity="0.35"/>
+                    <stop offset="100%" stop-color="#a8e6cf" stop-opacity="0.30"/>
                 </linearGradient>
 
-                <!-- Gradiente del Digestato Líquido (Marrón Orgánico) -->
+                <!-- Gradiente Digestato Líquido -->
                 <linearGradient id="digestatoGrad" x1="0%" y1="0%" x2="100%" y2="0%">
-                    <stop offset="0%" stop-color="#8B5A2B"/>
-                    <stop offset="50%" stop-color="#A0522D"/>
-                    <stop offset="100%" stop-color="#6B3E2E"/>
+                    <stop offset="0%" stop-color="#795548"/>
+                    <stop offset="50%" stop-color="#5D4037"/>
+                    <stop offset="100%" stop-color="#4E342E"/>
                 </linearGradient>
 
-                <!-- Gradiente Escala pH estilo PhET (Rojo-Amarillo-Verde-Azul) -->
+                <!-- Gradiente Escala pH estilo PhET -->
                 <linearGradient id="phScaleGrad" x1="0%" y1="100%" x2="0%" y2="0%">
                     <stop offset="0%" stop-color="#e74c3c"/>     <!-- pH 0 Rojo -->
                     <stop offset="35%" stop-color="#f39c12"/>    <!-- pH 5 Ácido -->
                     <stop offset="50%" stop-color="#2ecc71"/>    <!-- pH 7 Neutro -->
                     <stop offset="75%" stop-color="#3498db"/>    <!-- pH 10 Básico -->
-                    <stop offset="100%" stop-color="#2c3e50"/>   # pH 14 Alcalino alto
+                    <stop offset="100%" stop-color="#2c3e50"/>   <!-- pH 14 Alcalino -->
                 </linearGradient>
             </defs>
 
-            <!-- ================= ESCALA DE pH INTERACTIVA (ESTILO PhET) ================= -->
-            <g id="escala_ph_phet">
-                <!-- Barra de Gradiente pH -->
-                <rect x="15" y="70" width="22" height="180" rx="3" fill="url(#phScaleGrad)" stroke="#2d3748" stroke-width="1.5"/>
+            <!-- ================= ESCALA DE pH VERTICAL ================= -->
+            <g id="escala_ph">
+                <!-- Barra Gradiente -->
+                <rect x="18" y="80" width="18" height="170" rx="3" fill="url(#phScaleGrad)" stroke="#4a5568" stroke-width="1.2"/>
                 
-                <!-- Marcas de Graduación -->
-                <line x1="37" y1="70" x2="43" y2="70" stroke="#2d3748" stroke-width="1.5"/>  <!-- 14 -->
-                <text x="46" y="73" font-size="8" fill="#2d3748" font-weight="bold">14</text>
+                <!-- Marcas de pH (14, 7, 0) -->
+                <line x1="36" y1="80" x2="41" y2="80" stroke="#4a5568" stroke-width="1"/>
+                <text x="44" y="83" font-size="8" fill="#4a5568" font-weight="bold">14</text>
 
-                <line x1="37" y1="160" x2="45" y2="160" stroke="#2d3748" stroke-width="2"/>  <!-- 7 Neutro -->
-                <text x="48" y="163" font-size="9" fill="#27ae60" font-weight="bold">7</text>
+                <line x1="36" y1="165" x2="43" y2="165" stroke="#27ae60" stroke-width="1.5"/>
+                <text x="45" y="168" font-size="9" fill="#27ae60" font-weight="bold">7</text>
 
-                <line x1="37" y1="250" x2="43" y2="250" stroke="#2d3748" stroke-width="1.5"/> <!-- 0 -->
-                <text x="46" y="253" font-size="8" fill="#2d3748" font-weight="bold">0</text>
+                <line x1="36" y1="250" x2="41" y2="250" stroke="#4a5568" stroke-width="1"/>
+                <text x="44" y="253" font-size="8" fill="#4a5568" font-weight="bold">0</text>
 
-                <!-- Flecha indicadora de escala y Cartelito con lectura -->
-                <polygon points="37,{y_sonda_escala} 47,{y_sonda_escala-5} 47,{y_sonda_escala+5}" fill="#1a202c"/>
-                
-                <rect x="47" y="{y_sonda_escala-12}" width="42" height="24" rx="5" fill="#2d3748"/>
-                <text x="68" y="{y_sonda_escala+3}" text-anchor="middle" fill="#ffffff" font-size="10" font-weight="bold">{ph_reactor:.2f}</text>
+                <!-- Lectura de pH flotante en escala -->
+                <polygon points="36,{y_sonda_escala} 44,{y_sonda_escala-4} 44,{y_sonda_escala+4}" fill="#2d3748"/>
+                <rect x="44" y="{y_sonda_escala-10}" width="38" height="20" rx="4" fill="#2d3748"/>
+                <text x="63" y="{y_sonda_escala+3}" text-anchor="middle" fill="#ffffff" font-size="9" font-weight="bold">{ph_reactor:.2f}</text>
 
-                <!-- Cable curvo hasta la mira en el reactor -->
-                <path d="M 68 {y_sonda_escala+12} C 68 290, 280 290, 310 210" fill="none" stroke="#2d3748" stroke-width="2.5" stroke-dasharray="3 1"/>
+                <!-- Cable de sonda curvo hacia el reactor -->
+                <path d="M 63 {y_sonda_escala+10} C 63 285, 230 285, 250 210" fill="none" stroke="#4a5568" stroke-width="2" stroke-dasharray="3 2"/>
             </g>
 
-            <!-- ================= CUBA DE ALIMENTACIÓN (IZQUIERDA) ================= -->
+            <!-- ================= CUBA DE ALIMENTACIÓN ================= -->
             <g id="cuba_alimentacion">
-                <!-- Estructura tolva -->
-                <path d="M 105 150 L 145 150 L 135 230 L 115 230 Z" fill="#e2e8f0" stroke="#4a5568" stroke-width="2"/>
-                <!-- Nivel de Biomasa -->
-                <path d="M 107 {y_inicio_biomasa} L 143 {y_inicio_biomasa} L 135 230 L 115 230 Z" fill="#6d4c41"/>
-                <!-- Tubería de alimentación -->
-                <path d="M 125 220 L 125 240 L 175 240" stroke="#5d4037" stroke-width="6" fill="none"/>
+                <path d="M 100 155 L 138 155 L 130 230 L 108 230 Z" fill="#edf2f7" stroke="#718096" stroke-width="2"/>
+                <path d="M 102 {y_inicio_biomasa} L 136 {y_inicio_biomasa} L 130 230 L 108 230 Z" fill="#6d4c41"/>
+                <path d="M 119 220 L 119 240 L 165 240" stroke="#5d4037" stroke-width="5" fill="none"/>
                 
-                <!-- Etiqueta de pH de Entrada -->
-                <rect x="100" y="125" fill="#319795" width="50" height="18" rx="3"/>
-                <text x="125" y="137" text-anchor="middle" fill="white" font-size="9" font-weight="bold">in pH {ph_entrada:.1f}</text>
+                <!-- Tag pH de Entrada -->
+                <rect x="95" y="132" fill="#319795" width="48" height="16" rx="3"/>
+                <text x="119" y="143" text-anchor="middle" fill="white" font-size="8.5" font-weight="bold">in pH {ph_entrada:.1f}</text>
             </g>
 
-            <!-- ================= DIGESTOR / REACTOR PRINCIPAL ================= -->
-            <!-- CÚPULA DE BIOGÁS SUPERIOR FLEXIBLE (VERDE) -->
-            <path d="M 170 110 Q 300 20 430 110 Z" fill="url(#gasDomeGreenGrad)" stroke="#27ae60" stroke-width="2.5">
+            <!-- ================= REACTOR PRINCIPAL ================= -->
+            <!-- Cúpula Verde Biogás -->
+            <path d="M 160 110 Q 290 20 420 110 Z" fill="url(#gasDomeGreenGrad)" stroke="#27ae60" stroke-width="2">
                 <animate attributeName="d" 
-                         values="M 170 110 Q 300 20 430 110 Z; M 170 110 Q 300 14 430 110 Z; M 170 110 Q 300 20 430 110 Z" 
+                         values="M 160 110 Q 290 20 420 110 Z; M 160 110 Q 290 15 420 110 Z; M 160 110 Q 290 20 420 110 Z" 
                          dur="3s" repeatCount="indefinite" />
             </path>
-            
-            <!-- TEXTO DE FASE GAS REUBICADO CON CAJA DE LECTURA LIMPIA -->
-            <rect x="235" y="55" width="130" height="22" rx="4" fill="#ffffff" opacity="0.85" stroke="#27ae60" stroke-width="1"/>
-            <text x="300" y="70" text-anchor="middle" fill="#1e8449" font-weight="bold" font-size="12">Fase Gas (CH₄ / CO₂)</text>
 
-            <!-- PARED DEL REACTOR -->
-            <path d="M 170 100 L 170 260 A 30 30 0 0 0 200 290 L 400 290 A 30 30 0 0 0 430 260 L 430 100" 
-                  fill="none" stroke="#718096" stroke-width="5" stroke-linejoin="round"/>
+            <!-- Cuerpo del Reactor -->
+            <path d="M 160 100 L 160 255 A 25 25 0 0 0 185 280 L 395 280 A 25 25 0 0 0 420 255 L 420 100" 
+                  fill="none" stroke="#718096" stroke-width="4.5" stroke-linejoin="round"/>
 
-            <!-- LÍQUIDO DIGESTATO (MARRÓN) -->
-            <path d="M 173 125 L 173 258 A 27 27 0 0 0 200 285 L 400 285 A 27 27 0 0 0 427 258 L 427 125 Z" 
+            <!-- Digestato Líquido -->
+            <path d="M 163 125 L 163 253 A 22 22 0 0 0 185 275 L 395 275 A 22 22 0 0 0 417 253 L 417 125 Z" 
                   fill="url(#digestatoGrad)"/>
-            <ellipse cx="300" cy="125" rx="127" ry="6" fill="#5c3818"/>
+            <ellipse cx="290" cy="125" rx="127" ry="6" fill="#4E342E"/>
 
-            <!-- BURBUJAS DE BIOGÁS -->
+            <!-- Burbujas de Metano -->
             <g id="burbujas">
-                <circle cx="230" cy="240" r="3.5" fill="#e8f8f5" opacity="0.8">
-                    <animate attributeName="cy" values="240;125" dur="{dur_burbuja}" repeatCount="indefinite"/>
+                <circle cx="220" cy="230" r="3" fill="#e8f8f5" opacity="0.8">
+                    <animate attributeName="cy" values="230;125" dur="{dur_burbuja}" repeatCount="indefinite"/>
                     <animate attributeName="opacity" values="0.8;0" dur="{dur_burbuja}" repeatCount="indefinite"/>
                 </circle>
-                <circle cx="290" cy="260" r="4.5" fill="#e8f8f5" opacity="0.8">
-                    <animate attributeName="cy" values="260;125" dur="1.8s" repeatCount="indefinite"/>
+                <circle cx="280" cy="250" r="4" fill="#e8f8f5" opacity="0.8">
+                    <animate attributeName="cy" values="250;125" dur="1.8s" repeatCount="indefinite"/>
                     <animate attributeName="opacity" values="0.9;0" dur="1.8s" repeatCount="indefinite"/>
                 </circle>
-                <circle cx="350" cy="230" r="3.0" fill="#e8f8f5" opacity="0.8">
-                    <animate attributeName="cy" values="230;125" dur="2.2s" repeatCount="indefinite"/>
+                <circle cx="340" cy="220" r="3" fill="#e8f8f5" opacity="0.8">
+                    <animate attributeName="cy" values="220;125" dur="2.2s" repeatCount="indefinite"/>
                     <animate attributeName="opacity" values="0.8;0" dur="2.2s" repeatCount="indefinite"/>
                 </circle>
             </g>
 
-            <!-- AGITADOR DE PALETAS -->
-            <line x1="300" y1="40" x2="300" y2="220" stroke="#2d3748" stroke-width="4"/>
-            <g transform="translate(300, 220)">
+            <!-- Agitador -->
+            <line x1="290" y1="35" x2="290" y2="215" stroke="#2d3748" stroke-width="3.5"/>
+            <g transform="translate(290, 215)">
                 <g>
-                    <ellipse cx="-22" cy="0" rx="18" ry="6" fill="#cbd5e0" stroke="#2d3748" stroke-width="1.5" transform="rotate(-15 -22 0)"/>
-                    <ellipse cx="22" cy="0" rx="18" ry="6" fill="#cbd5e0" stroke="#2d3748" stroke-width="1.5" transform="rotate(-15 22 0)"/>
-                    <circle cx="0" cy="0" r="5" fill="#2d3748"/>
+                    <ellipse cx="-20" cy="0" rx="16" ry="5" fill="#cbd5e0" stroke="#2d3748" stroke-width="1.2" transform="rotate(-15 -20 0)"/>
+                    <ellipse cx="20" cy="0" rx="16" ry="5" fill="#cbd5e0" stroke="#2d3748" stroke-width="1.2" transform="rotate(-15 20 0)"/>
+                    <circle cx="0" cy="0" r="4" fill="#2d3748"/>
                     {f'<animateTransform attributeName="transform" type="rotate" from="0" to="360" dur="{dur_agit}" repeatCount="{anim_agit}" />' if modo_agitacion != "sin_agitacion" else ''}
                 </g>
             </g>
 
-            <!-- MIRA DE LA SONDA DENTRO DEL LIQUIDO DEL REACTOR (ESTILO PhET) -->
-            <g transform="translate(310, 210)">
-                <circle cx="0" cy="0" r="12" fill="#2d3748" opacity="0.85"/>
-                <circle cx="0" cy="0" r="9" fill="none" stroke="#ffffff" stroke-width="1.5"/>
-                <line x1="-7" y1="0" x2="7" y2="0" stroke="#ffffff" stroke-width="1.5"/>
-                <line x1="0" y1="-7" x2="0" y2="7" stroke="#ffffff" stroke-width="1.5"/>
+            <!-- Mira de la Sonda en Licor -->
+            <g transform="translate(250, 210)">
+                <circle cx="0" cy="0" r="10" fill="#2d3748" opacity="0.9"/>
+                <circle cx="0" cy="0" r="7" fill="none" stroke="#ffffff" stroke-width="1.2"/>
+                <line x1="-5" y1="0" x2="5" y2="0" stroke="#ffffff" stroke-width="1.2"/>
+                <line x1="0" y1="-5" x2="0" y2="5" stroke="#ffffff" stroke-width="1.2"/>
             </g>
 
-            <!-- TUBERÍA DE SALIDA DE BIOGÁS -->
-            <path d="M 300 30 L 300 10 L 440 10" stroke="#27ae60" stroke-width="4" fill="none"/>
+            <!-- Tubería de Salida de Biogás -->
+            <path d="M 290 25 L 290 12 L 420 12 L 420 30" stroke="#27ae60" stroke-width="3.5" fill="none"/>
 
-            <!-- BADGES FLOTANTES INFOS -->
-            <rect x="180" y="255" fill="#2ecc71" width="55" height="20" rx="4"/>
-            <text x="207" y="269" text-anchor="middle" fill="white" font-weight="bold" font-size="11">{temp_c}°C</text>
+            <!-- ETIQUETA FASE GAS UBICADA SOBRE LA TUBERÍA (DESPEJADA DE LÍNEAS) -->
+            <rect x="330" y="22" width="115" height="20" rx="4" fill="#e8f8f5" stroke="#27ae60" stroke-width="1.2"/>
+            <text x="387" y="36" text-anchor="middle" fill="#1e8449" font-weight="bold" font-size="10.5">Fase Gas (CH₄ / CO₂)</text>
+
+            <!-- Badge Temperatura -->
+            <rect x="175" y="250" fill="#2ecc71" width="48" height="18" rx="4"/>
+            <text x="199" y="262" text-anchor="middle" fill="white" font-weight="bold" font-size="10">{temp_c}°C</text>
         </svg>
     </div>
     """
-    components.html(html_code, height=330)
+    components.html(html_code, height=320)
 
 # --- FUNCIÓN GRÁFICO COMPOSICIÓN DE GAS ---
 def mostrar_grafico_composicion(pct_ch4, pct_co2, pct_h2o, pct_n2=2.0, h2s_ppm=0.0):
@@ -232,7 +227,7 @@ def mostrar_grafico_composicion(pct_ch4, pct_co2, pct_h2o, pct_n2=2.0, h2s_ppm=0
     fig.update_layout(
         xaxis=dict(range=[0, 100], title="Volume (%) →", dtick=10),
         yaxis=dict(autorange="reversed"),
-        height=320,
+        height=310,
         margin=dict(l=20, r=20, t=10, b=30),
         plot_bgcolor="white",
         paper_bgcolor="white"
@@ -299,19 +294,17 @@ else:
     ef_term_chp = float(df_params.loc["eficiencia_termica_chp", "valor"])
 
 # --- CÁLCULO DE pH EN EL REACTOR Y FACTOR DE IMPACTO ---
-# El pH del reactor es una amortiguación (buffer) entre neutro (7.2) y el pH de la carga ingresante
 ph_reactor = 7.2 + (ph_entrada - 7.0) * (masa_diaria / 5000.0) * 0.8
 ph_reactor = max(4.0, min(9.0, ph_reactor))
 
-# Factor de inhibición por pH
 if 6.8 <= ph_reactor <= 7.6:
     factor_ph = 1.0
 elif 6.0 <= ph_reactor < 6.8:
-    factor_ph = 0.65  # Acidificación moderada
+    factor_ph = 0.65
 elif ph_reactor < 6.0:
-    factor_ph = 0.15  # Acidosis aguda / Inhibición severa
+    factor_ph = 0.15
 else:
-    factor_ph = 0.55  # Inhibición por amonio / alcalinidad
+    factor_ph = 0.55
 
 # --- CÁLCULOS TÉCNICOS ---
 def calcular_presion_vapor_kPa(t_c):
@@ -393,7 +386,6 @@ elif ph_reactor > 7.8:
 
 # --- SECCIÓN DE RESULTADOS SEGÚN EL MODO ---
 if not es_avanzado:
-    # 🟢 MODO SIMPLE
     st.subheader("💡 Resultados Rápidos Estimados")
     
     col1, col2, col3 = st.columns(3)
@@ -411,7 +403,6 @@ if not es_avanzado:
     evitando que esa materia orgánica se descomponga al aire libre emitiendo gases de efecto invernadero.
     """)
     
-    # Gráfico simple de tendencia
     np.random.seed(42)
     dias = np.arange(1, 31)
     df_chart = pd.DataFrame({
@@ -423,7 +414,6 @@ if not es_avanzado:
     st.line_chart(df_chart)
 
 else:
-    # 🔬 MODO AVANZADO
     st.subheader("⚡ Balance Avanzado CHP (Combined Heat and Power)")
 
     c1, c2, c3, c4 = st.columns(4)
