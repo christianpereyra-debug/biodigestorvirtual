@@ -1,0 +1,4 @@
+modo;eficiencia_mezclado;riesgo_costra;potencia_especifica_kw_m3;horas_operacion_dia;descripcion
+continua;1.00;Bajo;0.008;24;Mezclado perfecto. Homogeneidad total y máxima producción.
+intermitente;0.92;Medio;0.008;6;Operación óptima energética (15 min/h). Evita sedimentos.
+sin_agitacion;0.65;Alto;0.0;0;Formación de cortocircuitos y acumulación de sedimentos.

@@ -1,0 +1,6 @@
+id;sustrato;st_pct;sv_pct_st;rendimiento_ch4_m3_kgsv;pct_ch4;h2s_ppm_base;nh3_ppm_base
+bovino;Estiércol Bovino;12.0;80.0;0.24;60.0;2500;100
+porcino;Estiércol Porcino;8.0;75.0;0.31;65.0;4000;250
+rsu;Residuos Orgánicos (Cocina);22.0;88.0;0.42;58.0;1200;80
+avicola;Gallinaza / Estiércol Avícola;25.0;70.0;0.35;60.0;5500;850
+lodos;Lodos de Depuradora (EDAR);5.0;65.0;0.28;62.0;3000;150

@@ -1,0 +1,6 @@
+tecnologia;eficiencia_h2s_pct;eficiencia_h2o_pct;eficiencia_co2_pct;costo_relativo;descripcion
+sin_tratamiento;0.0;0.0;0.0;Ninguno;Biogás crudo sin acondicionar. Alto riesgo corrosivo.
+trampa_condensados;0.0;75.0;0.0;Bajo;Trampa de condensados por sifón y enfriamiento básico.
+viruta_hierro;85.0;10.0;0.0;Bajo;Filtro de lecho de limadura/óxido de hierro para adsorción de H2S.
+carbon_activado;98.0;30.0;0.0;Medio;Adsorción en carbón activado impregnado para remoción fina de H2S.
+lavado_agua_psa;99.0;95.0;90.0;Alto;Upgrading completo a Biometano (Scrubbing / PSA).

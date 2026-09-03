@@ -1,0 +1,7 @@
+parametro;valor;unidad;descripcion
+factor_eficiencia_temp;0.025;1/°C;Factor de corrección de actividad bacteriana fuera de 35°C
+pci_metano;9.94;kWh/m3;Poder Calorífico Inferior del Metano
+densidad_agua;1000;kg/m3;Densidad aproximada de la mezcla digestato
+eficiencia_electrica_chp;0.38;-;Eficiencia eléctrica del módulo CHP (38%)
+eficiencia_termica_chp;0.45;-;Eficiencia térmica del módulo CHP (45%)
+calor_especifico_agua;4.186;kJ/kg°C;Calor específico del sustrato/digestato
