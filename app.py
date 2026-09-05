@@ -11,20 +11,29 @@ st.set_page_config(
     layout="wide"
 )
 
-# --- CSS PERSONALIZADO: AJUSTE DE MARGEN, TIPOGRAFÍA Y OCULTADO DE CABECERA STREAMLIT ---
+# --- CSS PERSONALIZADO: AJUSTE DE MARGEN, TIPOGRAFÍA Y REAPERTURA DE SIDEBAR ---
 st.markdown("""
     <style>
-        /* 1. Ocultar la barra superior nativa (Share, GitHub, etc.) y pie de página */
-        header[data-testid="stHeader"] {
+        /* 1. Ocultar los elementos del menú superior (Share, GitHub, etc.) pero mantener accesible el botón de la barra lateral */
+        [data-testid="stHeader"] {
+            background-color: transparent !important;
+            z-index: 100 !important;
+        }
+        
+        /* Ocultar elementos específicos del header excepto el botón para abrir/cerrar sidebar */
+        [data-testid="stHeader"] > div:nth-child(2) {
             display: none !important;
         }
         #MainMenu {visibility: hidden;}
         footer {visibility: hidden;}
 
-        /* 2. Reducir el espacio en blanco superior del contenedor principal */
+        /* 2. Reducir el espacio en blanco superior e izquierdo del contenedor principal */
         .block-container {
             padding-top: 1rem !important;
             padding-bottom: 1rem !important;
+            padding-left: 1.5rem !important;
+            padding-right: 1.5rem !important;
+            max-width: 98% !important;
         }
 
         /* 3. Ajustar el tamaño del título principal h1 */
