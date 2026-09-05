@@ -21,10 +21,13 @@ st.markdown("""
         #MainMenu {visibility: hidden;}
         footer {visibility: hidden;}
 
-        /* 2. Reducir el espacio en blanco superior del contenedor principal */
+        /* 2. Reducir el espacio en blanco superior e izquierdo del contenedor principal */
         .block-container {
-            padding-top: 1rem !important;
+            padding-top: 0.5rem !important;
             padding-bottom: 1rem !important;
+            padding-left: 1rem !important;
+            padding-right: 1.5rem !important;
+            max-width: 98% !important;
         }
 
         /* 3. Ajustar el tamaño del título principal h1 */
