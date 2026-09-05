@@ -11,40 +11,6 @@ st.set_page_config(
     layout="wide"
 )
 
-# --- CSS PERSONALIZADO: AJUSTE DE MARGEN, TIPOGRAFÍA Y OCULTADO DE CABECERA STREAMLIT ---
-st.markdown("""
-    <style>
-        /* 1. Ocultar la barra superior nativa (Share, GitHub, etc.) y pie de página */
-        header[data-testid="stHeader"] {
-            display: none !important;
-        }
-        #MainMenu {visibility: hidden;}
-        footer {visibility: hidden;}
-
-        /* 2. Reducir el espacio en blanco superior del contenedor principal */
-        .block-container {
-            padding-top: 1rem !important;
-            padding-bottom: 1rem !important;
-        }
-
-        /* 3. Ajustar el tamaño del título principal h1 */
-        h1 {
-            font-size: 1.6rem !important;
-            padding-top: 0rem !important;
-            padding-bottom: 0.3rem !important;
-            margin-top: 0rem !important;
-        }
-
-        /* 4. Ajustar el tamaño de los subtítulos h2/h3 */
-        h2, h3 {
-            font-size: 1.2rem !important;
-            padding-top: 0.2rem !important;
-            padding-bottom: 0.2rem !important;
-            margin-top: 0.5rem !important;
-        }
-    </style>
-""", unsafe_allow_html=True)
-
 st.title("🌱 Biodigestor Virtual")
 
 # --- CARGA DE DATOS ROBUSTA ---
@@ -85,7 +51,7 @@ def cargar_datos():
 # Cargar datasets
 df_sustratos, df_params, df_agitacion, df_purif = cargar_datos()
 
-# --- FUNCIÓN ANIMACIÓN SVG ESTILO PhET ---
+# --- FUNCIÓN ANIMACIÓN SVG ESTILO PhET CON MEJORAS DE DISEÑO ---
 def mostrar_animacion_biodigestor(volumen_m3, temp_c, modo_agitacion, ph_entrada, ph_reactor, masa_kg_dia, m3_biogas_dia):
     # 1. Configuración de agitación
     if modo_agitacion == "continua":
@@ -225,7 +191,7 @@ def mostrar_animacion_biodigestor(volumen_m3, temp_c, modo_agitacion, ph_entrada
             <!-- Tubería de Salida de Biogás -->
             <path d="M 290 25 L 290 12 L 420 12 L 420 30" stroke="#27ae60" stroke-width="3.5" fill="none"/>
 
-            <!-- ETIQUETA FASE GAS UBICADA SOBRE LA TUBERÍA -->
+            <!-- ETIQUETA FASE GAS UBICADA SOBRE LA TUBERÍA (DESPEJADA DE LÍNEAS) -->
             <rect x="330" y="22" width="115" height="20" rx="4" fill="#e8f8f5" stroke="#27ae60" stroke-width="1.2"/>
             <text x="387" y="36" text-anchor="middle" fill="#1e8449" font-weight="bold" font-size="10.5">Fase Gas (CH₄ / CO₂)</text>
 
